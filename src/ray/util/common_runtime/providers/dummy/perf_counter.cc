@@ -1,4 +1,3 @@
-
 # include "perf_counter.h"
 
 CrPerfCounter::CrPerfCounter(const char* section, const char *name, CrPerfCounterType type, const char *dsptr)

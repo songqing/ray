@@ -16,4 +16,3 @@ void CrLogger::write_string(const char* str, size_t sz)
 {
 
 }
-
