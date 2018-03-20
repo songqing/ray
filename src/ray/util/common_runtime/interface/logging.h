@@ -1,4 +1,5 @@
-# pragma once 
+#ifndef RAY_UTIL_COMMON_RUNTIME_INTERFACE_LOGGING_H
+#define RAY_UTIL_COMMON_RUNTIME_INTERFACE_LOGGING_H
 
 # include <iostream>
 # include <type_traits>
@@ -45,3 +46,5 @@ class CrFatalLogger : public CrLogger {
     std::abort();
   }
 };
+
+#endif  // RAY_UTIL_COMMON_RUNTIME_INTERFACE_LOGGING_H

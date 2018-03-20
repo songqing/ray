@@ -1,4 +1,5 @@
-# pragma once
+#ifndef RAY_UTIL_COMMON_RUNTIME_INTERFACE_CONFIGURATION_H
+#define RAY_UTIL_COMMON_RUNTIME_INTERFACE_CONFIGURATION_H
 
 # include <map>
 # include <string>
@@ -19,3 +20,5 @@ bool CrReadConfiguration(
     const std::string& args,
     /*__out*/ std::map< std::string, std::map<std::string, std::string> >& config
     );
+
+#endif  // RAY_UTIL_COMMON_RUNTIME_INTERFACE_CONFIGURATION_H

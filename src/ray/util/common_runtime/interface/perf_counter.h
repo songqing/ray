@@ -1,4 +1,5 @@
-# pragma once 
+#ifndef RAY_UTIL_COMMON_RUNTIME_INTERFACE_PERF_COUNTER_H
+#define RAY_UTIL_COMMON_RUNTIME_INTERFACE_PERF_COUNTER_H
 
 typedef enum CrPerfCounterType
 {
@@ -25,3 +26,5 @@ public:
 private:
     void* impl_;
 };
+
+#endif  // RAY_UTIL_COMMON_RUNTIME_INTERFACE_PERF_COUNTER_H

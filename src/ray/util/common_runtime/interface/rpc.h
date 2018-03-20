@@ -1,4 +1,5 @@
-# pragma once 
+#ifndef RAY_UTIL_COMMON_RUNTIME_INTERFACE_RPC_H
+#define RAY_UTIL_COMMON_RUNTIME_INTERFACE_RPC_H
 
 //
 // We use protobuf generated RPC stub (both client and server)
@@ -8,3 +9,5 @@
 // the protobuf plugins, so we don't need to have a common
 // interface here.
 //
+
+#endif  // RAY_UTIL_COMMON_RUNTIME_INTERFACE_RPC_H

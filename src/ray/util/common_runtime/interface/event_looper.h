@@ -1,4 +1,5 @@
-# pragma once 
+#ifndef RAY_UTIL_COMMON_RUNTIME_INTERFACE_EVENT_LOOPER_H
+#define RAY_UTIL_COMMON_RUNTIME_INTERFACE_EVENT_LOOPER_H
 
 /// error code
 #define CR_OK 0
@@ -40,3 +41,5 @@ void CrMain(CrEventLoop *eventLoop);
 const char *CrGetApiName(void);
 int CrGetSetSize(CrEventLoop *eventLoop);
 int CrResizeSetSize(CrEventLoop *eventLoop, int setsize);
+
+#endif  // RAY_UTIL_COMMON_RUNTIME_INTERFACE_EVENT_LOOPER_H
