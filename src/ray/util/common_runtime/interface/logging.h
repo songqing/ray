@@ -1,11 +1,11 @@
 #ifndef RAY_UTIL_COMMON_RUNTIME_INTERFACE_LOGGING_H
 #define RAY_UTIL_COMMON_RUNTIME_INTERFACE_LOGGING_H
 
-# include <iostream>
-# include <type_traits>
+#include <iostream>
+#include <type_traits>
 
 # ifndef _WIN32
-# include <execinfo.h>
+#include <execinfo.h>
 # endif
 
 class CrLogger {
@@ -15,8 +15,8 @@ class CrLogger {
 
   template <class T>
   CrLogger &operator<<(const T &t) {
-      //static_assert (false, "not implemented");
-      return *this;
+    //static_assert (false, "not implemented");
+    return *this;
   }
 
   // TODO: implement specialization for common types:
@@ -24,7 +24,7 @@ class CrLogger {
 
  protected:
   // implemented by different providers
-  void write_string(const char* str, size_t sz);
+  void write_string(const char *str, size_t sz);
 
  protected:
   const int severity_;

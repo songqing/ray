@@ -23,8 +23,8 @@
 struct CrEventLoop;
 
 /* callback types */
-typedef void CrFileProc(struct CrEventLoop *eventLoop, int fd, void *clientData, int mask);
-typedef int CrTimeProc(struct CrEventLoop *eventLoop, long long id, void *clientData);
+typedef void CrFileProc(CrEventLoop *eventLoop, int fd, void *clientData, int mask);
+typedef int CrTimeProc(CrEventLoop *eventLoop, long long id, void *clientData);
 
 /* Prototypes */
 CrEventLoop *CrCreateEventLoop(int setsize);

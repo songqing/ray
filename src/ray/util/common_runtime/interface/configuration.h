@@ -1,8 +1,8 @@
 #ifndef RAY_UTIL_COMMON_RUNTIME_INTERFACE_CONFIGURATION_H
 #define RAY_UTIL_COMMON_RUNTIME_INTERFACE_CONFIGURATION_H
 
-# include <map>
-# include <string>
+#include <map>
+#include <string>
 
 /// read all configuration from a given file with certain arguments
 ///
@@ -11,9 +11,9 @@
 /// \param config[out] output configuration
 /// \return success or not
 bool CrReadConfiguration(
-    const std::string& file,
-    const std::string& args,
-    std::map< std::string, std::map<std::string, std::string> >& config
+    const std::string &file,
+    const std::string &args,
+    std::map< std::string, std::map<std::string, std::string>> *config
     );
 
 #endif  // RAY_UTIL_COMMON_RUNTIME_INTERFACE_CONFIGURATION_H
