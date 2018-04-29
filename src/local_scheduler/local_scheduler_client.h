@@ -11,6 +11,8 @@ struct LocalSchedulerConnection {
   int conn;
   /** The IDs of the GPUs that this client can use. */
   std::vector<int> gpu_ids;
+  /** the id of the connected local scheduler */
+  UniqueID local_scheduler_id;
 };
 
 /**
