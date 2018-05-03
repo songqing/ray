@@ -14,7 +14,7 @@ This directory contains the java worker, with the following components.
 
 ```sh
 # build native components
-sh ../build.sh -l java "$@"
+sh ../build.sh -l java
 
 # build java worker
 mvn clean install -Dmaven.test.skip

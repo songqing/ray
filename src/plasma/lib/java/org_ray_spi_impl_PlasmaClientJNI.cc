@@ -180,10 +180,10 @@ JNIEXPORT jobjectArray JNICALL Java_org_ray_spi_impl_PlasmaClientJNI_get
     jobject dataBuf, metadataBuf;
     for (int i = 0; i < num_oids; ++i) {
         o = env->NewObjectArray(2, clsByteBuffer, NULL);
-        if (obufs[i].data_size != -1) {
-            dataBuf = env->NewDirectByteBuffer(const_cast<uint8_t *>(obufs[i].data->data()), obufs[i].data_size);
-            if (obufs[i].metadata_size > 0) {
-                metadataBuf = env->NewDirectByteBuffer(const_cast<uint8_t *>(obufs[i].metadata->data()), obufs[i].metadata_size);
+        if (obufs[i].data && obufs[i].data->size() != -1 ) {
+            dataBuf = env->NewDirectByteBuffer(const_cast<uint8_t *>(obufs[i].data->data()), obufs[i].data->size());
+            if (obufs[i].metadata && obufs[i].metadata->size() > 0) {
+                metadataBuf = env->NewDirectByteBuffer(const_cast<uint8_t *>(obufs[i].metadata->data()), obufs[i].metadata->size());
             }
             else {
                 metadataBuf = NULL;
