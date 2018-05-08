@@ -1,16 +1,16 @@
 This directory contains the java worker, with the following components.
 
-* java/api: Ray API definition 
+* java/api: Ray API definition
 * java/common: utilities
 * java/hook: binary rewrite of the Java byte-code for remote execution
 * java/runtime-common: common implementation of the runtime in worker
-* java/runtime-dev: a pure-java mock implementation of the runtime for fast development 
-* java/runtime-native: a native implementation of the runtime 
+* java/runtime-dev: a pure-java mock implementation of the runtime for fast development
+* java/runtime-native: a native implementation of the runtime
 * java/test: various tests
-* src/local_scheduler/lib/java: JNI client library for local scheduler 
+* src/local_scheduler/lib/java: JNI client library for local scheduler
 * src/plasma/lib/java: JNI client library for plasma storage
 
-# Build and test    
+# Build and test
 
 ```sh
 # build native components
@@ -34,13 +34,13 @@ Ray.init();
 
 ## Read and write remote objects
 
-Each remote object is considered a `RayObject<T>` where `T` is the type for this object. You can use `Ray.put` and `RayObject<T>.get` to write and read the objects. 
+Each remote object is considered a `RayObject<T>` where `T` is the type for this object. You can use `Ray.put` and `RayObject<T>.get` to write and read the objects.
 
 ```java
 Integer x = 1;
 RayObject<Integer> obj = Ray.put(x);
 Integer x1 = obj.get();
-assert (x == x1);   
+assert (x.equals(x1));
 ```
 
 ## Remote functions
@@ -64,7 +64,7 @@ We use `@RayRemote` to indicate that a function is remote, and use `Ray.call` to
 ```java
 public class ExampleClass {
     public static void main(String[] args) {
-        Ray.init();   
+        Ray.init();
         RayObject<String> objStr1 = Ray.call(ExampleClass::add, "hello", "world");
         RayObject<String> objStr2 = Ray.call(ExampleClass::add, objStr1, "example");
         String str = objStr2.get();
@@ -128,7 +128,7 @@ public class RayObject<T> {
 }
 ```
 
-This method blocks current thread until requested data gets ready and is fetched (if needed) from remote memory to local. 
+This method blocks current thread until requested data gets ready and is fetched (if needed) from remote memory to local.
 
 ### ``` Ray.wait ```
 Calling ``` Ray.wait ``` will block current thread and wait for specified ray calls. It returns when at least ``` numReturns ``` calls are completed, or the ``` timeout ``` expires. See multi-value support for `RayList`.
@@ -154,7 +154,7 @@ A list of `RayObject<T>`, inherited from `List<T>` in Java. It can be used as th
 
 A map of `RayObject<T>` with each indexed using a label with type `L`, inherited from `Map<L, T>`. It can be used as the type for both return value and parameters.
 
-### Enable multiple heterogeneous return values 
+### Enable multiple heterogeneous return values
 
 Java worker support at most four multiple heterogeneous return values, and in order to let the runtime know the number of return values we supply the method of `Ray.call_X` as follows.
 ```java
@@ -170,14 +170,14 @@ Here is an example.
 ```java
 public class MultiRExample {
     public static void main(String[] args) {
-        Ray.init(); 
+        Ray.init();
         RayObjects2<Integer, String> refs = Ray.call_2(MultiRExample::sayMultiRet);
         Integer obj1 = refs.r0().get();
         String obj2 = refs.r1().get();
         Assert.assertTrue(obj1.equals(123));
         Assert.assertTrue(obj2.equals("123"));
     }
-    
+
     @RayRemote
     public static MultipleReturns2<Integer, String> sayMultiRet() {
         return new MultipleReturns2<Integer, String>(123, "123");
@@ -196,14 +196,14 @@ Here is an example.
 ```java
 public class ListRExample {
     public static void main(String[] args) {
-        Ray.init(); 
+        Ray.init();
         RayList<Integer> ns = Ray.call_n(ListRExample::sayList, 10, 10);
         for (int i = 0; i < 10; i++) {
             RayObject<Integer> obj = ns.Get(i);
             Assert.assertTrue(i == obj.get());
         }
     }
-    
+
     @RayRemote
     public static List<Integer> sayList(Integer count) {
         ArrayList<Integer> rets = new ArrayList<>();
@@ -211,7 +211,7 @@ public class ListRExample {
             rets.add(i);
         return rets;
     }
-} 
+}
 ```
 
 ### Return with `RayMap`
@@ -225,7 +225,7 @@ Here is an example.
 ```java
 public class MapRExample {
     public static void main(String[] args) {
-        Ray.init(); 
+        Ray.init();
         RayMap<Integer, String> ns = Ray.call_n(MapRExample::sayMap,
                 Arrays.asList(1, 2, 4, 3), "n_futures_");
         for (Entry<Integer, RayObject<String>> ne : ns.EntrySet()) {
@@ -234,7 +234,7 @@ public class MapRExample {
             Assert.assertTrue(obj.get().equals("n_futures_" + key));
         }
     }
-    
+
     @RayRemote(externalIO = true)
     public static Map<Integer, String> sayMap(Collection<Integer> ids,
                                             String prefix) {
@@ -251,7 +251,7 @@ public class MapRExample {
 ```java
 public class ListTExample {
     public static void main(String[] args) {
-        Ray.init(); 
+        Ray.init();
         RayList<Integer> ints = new RayList<>();
         ints.add(Ray.put(new Integer(1)));
         ints.add(Ray.put(new Integer(1)));
@@ -260,7 +260,7 @@ public class ListTExample {
                                         (List<Integer>)ints);
         Assert.assertTrue(obj.get().equals(3));
     }
-    
+
     @RayRemote
     public static int sayReadRayList(List<Integer> ints) {
         int sum = 0;
@@ -269,7 +269,7 @@ public class ListTExample {
         }
         return sum;
     }
-} 
+}
 ```
 
 ## Actor Support
@@ -278,7 +278,7 @@ A regular class annotated with ``` @RayRemote ``` is an actor class.
 
 ```java
 @RayRemote
-public static class Adder {
+public class Adder {
   public Adder() {
     sum = 0;
   }
@@ -291,7 +291,7 @@ public static class Adder {
 }
 ```
 
-Whenever you call ``` Ray.create() ``` method, an actor will be created, and you get a local `RayActor` of that actor as the return value. 
+Whenever you call ``` Ray.create() ``` method, an actor will be created, and you get a local `RayActor` of that actor as the return value.
 
 ```java
 RayActor<Adder> adder = Ray.create(Adder.class);
