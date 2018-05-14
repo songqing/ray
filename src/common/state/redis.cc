@@ -422,21 +422,24 @@ void redis_object_table_remove_callback(redisAsyncContext *c,
                                         void *privdata) {
   REDIS_CALLBACK_HEADER(db, callback_data, r);
 
-  /* Do some minimal checking. */
-  redisReply *reply = (redisReply *) r;
-  if (strcmp(reply->str, "object not found") == 0) {
-    /* If our object entry was not in the table, it's probably a race
-     * condition with an object_table_add. */
-    return;
-  }
-  RAY_CHECK(reply->type != REDIS_REPLY_ERROR) << "reply->str is " << reply->str;
-  RAY_CHECK(strcmp(reply->str, "OK") == 0) << "reply->str is " << reply->str;
-  /* Call the done callback if there is one. */
-  if (callback_data->done_callback != NULL) {
-    object_table_done_callback done_callback =
-        (object_table_done_callback) callback_data->done_callback;
-    done_callback(callback_data->id, true, callback_data->user_context);
-  }
+  do {
+    /* Do some minimal checking. */
+    redisReply *reply = (redisReply *) r;
+    if (strcmp(reply->str, "object not found") == 0) {
+      /* If our object entry was not in the table, it's probably a race
+       * condition with an object_table_add. */
+      break;
+    }
+    RAY_CHECK(reply->type != REDIS_REPLY_ERROR) << "reply->str is " << reply->str;
+    RAY_CHECK(strcmp(reply->str, "OK") == 0) << "reply->str is " << reply->str;
+    /* Call the done callback if there is one. */
+    if (callback_data->done_callback != NULL) {
+      object_table_done_callback done_callback =
+              (object_table_done_callback) callback_data->done_callback;
+      done_callback(callback_data->id, true, callback_data->user_context);
+    }
+  } while (0);
+
   /* Clean up the timer and callback. */
   destroy_timer_callback(db->loop, callback_data);
 }
@@ -1033,18 +1036,18 @@ void redis_task_table_test_and_update_callback(redisAsyncContext *c,
      * local scheduler. */
     RAY_LOG(ERROR) << "No task found during task_table_test_and_update for "
                    << "task with ID " << callback_data->id;
-    return;
+  } else {
+    /* Determine whether the update happened. */
+    auto message = flatbuffers::GetRoot<TaskReply>(reply->str);
+    bool updated = message->updated();
+    /* Call the done callback if there is one. */
+    task_table_test_and_update_callback done_callback =
+            (task_table_test_and_update_callback) callback_data->done_callback;
+    if (done_callback != NULL) {
+      done_callback(task, callback_data->user_context, updated);
+    }
   }
-  /* Determine whether the update happened. */
-  auto message = flatbuffers::GetRoot<TaskReply>(reply->str);
-  bool updated = message->updated();
 
-  /* Call the done callback if there is one. */
-  task_table_test_and_update_callback done_callback =
-      (task_table_test_and_update_callback) callback_data->done_callback;
-  if (done_callback != NULL) {
-    done_callback(task, callback_data->user_context, updated);
-  }
   /* Free the task if it is not NULL. */
   if (task != NULL) {
     Task_free(task);
